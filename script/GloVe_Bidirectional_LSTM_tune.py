@@ -81,16 +81,16 @@ batch_size = 1024
 isSubmit = False
 
 param_grid = dict(embed_size=[embed_size],
-                  state_size=[30, 50, 70],
-                  dense_size1=[30, 50, 70],
-                  dense_size2=[30, 50, 70],
+                  state_size=[30, 50, 70, 90],
+                  dense_size1=[30, 50, 70, 90],
+                  dense_size2=[30, 50, 70, 90],
                   drop_rate1=[0., 0.1, 0.2],
                   drop_rate2=[0., 0.1, 0.2],
                   output_drop=[0., 0.1],
                   recurrent_drop=[0., 0.1],
-                  lr=[0.01, 0.001])
-grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3)
-grid_result = grid.fit(X_tr, y, batch_size=batch_size, epochs=10)
+                  lr=[0.01, 0.005, 0.001])
+grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, verbose=2)
+grid_result = grid.fit(X_tr, y, batch_size=batch_size, epochs=5, verbose=2)
 
 print(grid_result.best_params_)
 print(grid_result.best_score_)
