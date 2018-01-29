@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921eec49-9a36-4574-adbe-5af78ac315d7" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/script/GloVe_Bidirectional_LSTM_tune.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/script/GloVe_Bidirectional_LSTM.py" afterPath="$PROJECT_DIR$/script/GloVe_Bidirectional_LSTM.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -41,14 +43,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GloVe_Bidirectional_LSTM.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GloVe_Bidirectional_LSTM.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script/GloVe_Bidirectional_LSTM.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="295">
-              <caret line="66" column="32" lean-forward="false" selection-start-line="66" selection-start-column="32" selection-end-line="66" selection-end-column="32" />
+            <state relative-caret-position="24">
+              <caret line="54" column="52" lean-forward="false" selection-start-line="54" selection-start-column="52" selection-end-line="54" selection-end-column="52" />
               <folding>
                 <element signature="e#96#114#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GloVe_Bidirectional_LSTM_tune.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/script/GloVe_Bidirectional_LSTM_tune.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-915">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -499,11 +511,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script/GloVe_Bidirectional_LSTM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="295">
-          <caret line="66" column="32" lean-forward="false" selection-start-line="66" selection-start-column="32" selection-end-line="66" selection-end-column="32" />
+        <state relative-caret-position="24">
+          <caret line="54" column="52" lean-forward="false" selection-start-line="54" selection-start-column="52" selection-end-line="54" selection-end-column="52" />
           <folding>
             <element signature="e#96#114#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/script/GloVe_Bidirectional_LSTM_tune.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-915">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
