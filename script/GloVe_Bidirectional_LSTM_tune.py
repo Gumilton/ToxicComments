@@ -11,6 +11,8 @@ from keras.layers import LSTM, Bidirectional, GlobalMaxPool1D, Dropout
 from keras.optimizers import Adam
 from keras.preprocessing import text, sequence
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import GridSearchCV
 
 
 def get_coefs(word,*arr): return word, np.asarray(arr, dtype='float32')
@@ -74,37 +76,53 @@ def get_model(embed_size=embed_size, state_size=50, dense_size1=50, dense_size2=
     return model
 
 
-model = get_model()
+model = KerasClassifier(build_fn=get_model, verbose=0)
 batch_size = 1024
 isSubmit = False
 
+param_grid = dict(embed_size=[embed_size],
+                  state_size=[30, 50, 70],
+                  dense_size1=[30, 50, 70],
+                  dense_size2=[30, 50, 70],
+                  drop_rate1=[0., 0.1, 0.2],
+                  drop_rate2=[0., 0.1, 0.2],
+                  output_drop=[0., 0.1],
+                  recurrent_drop=[0., 0.1],
+                  lr=[0.01, 0.001])
+grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3)
+grid_result = grid.fit(X_tr, y, batch_size=batch_size, epochs=10)
 
-if isSubmit:
-    file_path = "../model/GloVe_fullTrain_weights_base_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".best.hdf5"
-    checkpoint = ModelCheckpoint(file_path, monitor='loss', verbose=1, save_best_only=True, mode='min')
-    validation_ratio = 0
-    callbacks_list = [checkpoint]
-    epochs = 2
+print(grid_result.best_params_)
+print(grid_result.best_score_)
 
-else:
-    file_path = "../model/GloVe_weights_base_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".best.hdf5"
-    checkpoint = ModelCheckpoint(file_path, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
-    early = EarlyStopping(monitor="val_loss", mode="min", patience=5)
-    reduceLR = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=2, verbose=1, mode='min',
-                                 epsilon=0.01, cooldown=0, min_lr=1e-6)
-    validation_ratio = 0.1
-    callbacks_list = [checkpoint, early, reduceLR] #early
-    epochs = 20
+best_model = grid_result.best_estimator_
+#
+# if isSubmit:
+#     file_path = "../model/GloVe_fullTrain_weights_base_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".best.hdf5"
+#     checkpoint = ModelCheckpoint(file_path, monitor='loss', verbose=1, save_best_only=True, mode='min')
+#     validation_ratio = 0
+#     callbacks_list = [checkpoint]
+#     epochs = 2
+#
+# else:
+#     file_path = "../model/GloVe_weights_base_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".best.hdf5"
+#     checkpoint = ModelCheckpoint(file_path, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+#     early = EarlyStopping(monitor="val_loss", mode="min", patience=5)
+#     reduceLR = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=2, verbose=1, mode='min',
+#                                  epsilon=0.01, cooldown=0, min_lr=1e-6)
+#     validation_ratio = 0.1
+#     callbacks_list = [checkpoint, early, reduceLR] #early
+#     epochs = 20
+#
+# hist = model.fit(X_tr, y, batch_size=batch_size, epochs=epochs, validation_split=validation_ratio,
+#                  callbacks=callbacks_list, verbose=2)
+#
+# model.load_weights(file_path)
 
-hist = model.fit(X_tr, y, batch_size=batch_size, epochs=epochs, validation_split=validation_ratio,
-                 callbacks=callbacks_list, verbose=2)
-
-model.load_weights(file_path)
-
-y_test = model.predict(X_te, batch_size=batch_size)
+y_test = best_model.predict(X_te, batch_size=batch_size)
 
 sample_submission = pd.read_csv("../data/sample_submission.csv")
 
 sample_submission[list_classes] = y_test
 
-sample_submission.to_csv("../result/GloVe_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".csv", index=False)
+sample_submission.to_csv("../result/CV_GloVe_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".csv", index=False)
