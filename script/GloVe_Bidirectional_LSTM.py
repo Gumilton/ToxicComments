@@ -19,6 +19,7 @@ def get_coefs(word,*arr): return word, np.asarray(arr, dtype='float32')
 embed_size = 100
 max_features = 20000
 maxlen = 100
+trainEmbed = True
 
 embeddings_index = dict(get_coefs(*o.strip().split()) for o in open("../data/glove.6B."+str(embed_size)+"d.txt", 'rb'))
 all_embs = np.stack(embeddings_index.values())
@@ -54,7 +55,7 @@ for word, i in word_index.items():
 def get_model(embed_size=embed_size, state_size=50, drop_rate=0.2, lr=0.01):
     # embed_size = 128
     inp = Input(shape=(maxlen, ))
-    x = Embedding(max_features, embed_size, weights=[embedding_matrix], trainable=False)(inp)
+    x = Embedding(max_features, embed_size, weights=[embedding_matrix], trainable=trainEmbed)(inp)
     x = Bidirectional(LSTM(state_size, return_sequences=True, dropout=drop_rate,
                            recurrent_dropout=drop_rate))(x)
     x = GlobalMaxPool1D()(x)
@@ -78,14 +79,14 @@ isSubmit = False
 
 
 if isSubmit:
-    file_path="GloVe_fullTrain_weights_base_binary_crossentropy.best.hdf5"
+    file_path = "../model/GloVe_fullTrain_weights_base_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".best.hdf5"
     checkpoint = ModelCheckpoint(file_path, monitor='loss', verbose=1, save_best_only=True, mode='min')
     validation_ratio = 0
     callbacks_list = [checkpoint]
     epochs = 2
 
 else:
-    file_path="GloVe_weights_base_binary_crossentropy.best.hdf5"
+    file_path = "../model/GloVe_weights_base_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".best.hdf5"
     checkpoint = ModelCheckpoint(file_path, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
     early = EarlyStopping(monitor="val_loss", mode="min", patience=5)
     reduceLR = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=2, verbose=1, mode='min',
@@ -105,4 +106,4 @@ sample_submission = pd.read_csv("../data/sample_submission.csv")
 
 sample_submission[list_classes] = y_test
 
-sample_submission.to_csv("GloVe_binary_crossentropy.csv", index=False)
+sample_submission.to_csv("../result/GloVe_binary_crossentropy_trainEmbed_" + str(trainEmbed) + "_embedSize_" +str(embed_size) + ".csv", index=False)
